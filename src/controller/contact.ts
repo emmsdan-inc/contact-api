@@ -29,8 +29,16 @@ export default class Contact extends  BaseController implements Controller {
     app = Router()
 
 
-    @Get(":userId")
+    @Get(":id")
     async get({params}: IRequest, res: Response) {
+        const contact = await ContactModel.findAll({
+            where: { id: params.id }
+        });
+        res.json(contact);
+    }
+
+    @Get("bulk/:userId")
+    async bulkGet({params}: IRequest, res: Response) {
         const contact = await ContactModel.findAll({
             where: { userId: params.userId }
         });
