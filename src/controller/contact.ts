@@ -70,27 +70,28 @@ export default class Contact extends  BaseController implements Controller {
     async update(req: IRequest, res: Response) {
         try {
             const contact = await ContactModel.update(req.body, {where: { id: req.params.id }})
-            res.status(200).json({ status: 200, data: contact[0] ? 'updated' : 'nothing changed' });
+            res.status(200).json({ status: 200, data: 'updated', object: contact });
         } catch (err) {
             res.status(400).json({ status: 400, message: err.message, object: err })
         }
     }
 
-    @Delete(":id")
-    async delete(req: IRequest, res: Response) {
-        try {
-            const contact = await ContactModel.destroy({where: { id: req.params.id }})
-            res.status(200).json({ status: 200, data: contact[0] ? 'deleted' : 'already deleted' });
-        } catch (err) {
-            res.status(400).json({ status: 400, message: err.message, object: err })
-        }
-    }
 
     @Delete("bulk", requestValidator(bulkDelete, true))
     async bulkDelete(req: IRequest, res: Response) {
         try {
             const contact = await ContactModel.destroy({where: { id: req.body }})
-            res.status(200).json({ status: 200, data: contact[0] ? 'deleted' : 'already deleted' });
+            res.status(200).json({ status: 200, data: 'deleted', object: contact });
+        } catch (err) {
+            res.status(400).json({ status: 400, message: err.message, object: err })
+        }
+    }
+
+    @Delete("single/:id")
+    async delete(req: IRequest, res: Response) {
+        try {
+            const contact = await ContactModel.destroy({where: { id: req.params.id }})
+            res.status(200).json({ status: 200, data: 'deleted' , object: contact });
         } catch (err) {
             res.status(400).json({ status: 400, message: err.message, object: err })
         }
