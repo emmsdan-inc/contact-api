@@ -39,8 +39,7 @@ export default class Contact extends  BaseController implements Controller {
     @Get("bulk/:userId")
     async bulkGet({params}: IRequest, res: Response) {
         const contact = await ContactModel.findAll({
-
-            where: { userId: params.userId }
+          where: { userId: params.userId }
         });
         res.json(contact);
     }
@@ -64,33 +63,35 @@ export default class Contact extends  BaseController implements Controller {
             res.status(400).json({ status: 400, message: err.message, object: err })
         }
     }
-
+  
 
     @Patch(":id", requestValidator(createContactSchema))
     async update(req: IRequest, res: Response) {
         try {
             const contact = await ContactModel.update(req.body, {where: { id: req.params.id }})
-            res.status(200).json({ status: 200, data: contact[0] ? 'updated' : 'nothing changed' });
-        } catch (err) {
-            res.status(400).json({ status: 400, message: err.message, object: err })
-        }
-    }
-  
-    @Delete(":id")
-    async delete(req: IRequest, res: Response) {
-        try {
-            const contact = await ContactModel.destroy({where: { id: req.params.id }})
-            res.status(200).json({ status: 200, data: contact[0] ? 'deleted' : 'already deleted' });
+            res.status(200).json({ status: 200, data: 'updated', object: contact });
+
         } catch (err) {
             res.status(400).json({ status: 400, message: err.message, object: err })
         }
     }
 
+
     @Delete("bulk", requestValidator(bulkDelete, true))
     async bulkDelete(req: IRequest, res: Response) {
         try {
             const contact = await ContactModel.destroy({where: { id: req.body }})
-            res.status(200).json({ status: 200, data: contact[0] ? 'deleted' : 'already deleted' });
+            res.status(200).json({ status: 200, data: 'deleted', object: contact });
+        } catch (err) {
+            res.status(400).json({ status: 400, message: err.message, object: err })
+        }
+    }
+
+    @Delete("single/:id")
+    async delete(req: IRequest, res: Response) {
+        try {
+            const contact = await ContactModel.destroy({where: { id: req.params.id }})
+            res.status(200).json({ status: 200, data: 'deleted' , object: contact });
         } catch (err) {
             res.status(400).json({ status: 400, message: err.message, object: err })
         }
